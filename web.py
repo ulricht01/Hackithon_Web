@@ -4,7 +4,7 @@ import plotly.express as px
 
 
 
-st.set_page_config("Stránka")
+st.set_page_config("Stránka", layout="wide")
 
 #----------------- Data ---------------------#
 data = pd.read_csv('zdrojak.csv')
@@ -18,7 +18,7 @@ sidebar = st.sidebar
 sidebar.title(":bar_chart: :blue[Filtry]")
 sidebar.caption("Vyberte potřebné filtry pro Vaši práci")
 
-filter1 = sidebar.multiselect("Obec", data["uzemi_typ"].unique())
+filter1 = sidebar.multiselect("Typ území", data["uzemi_typ"].unique())
 
 if filter1:
     data_2 = data[data["uzemi_typ"].isin(filter1)]
@@ -44,7 +44,6 @@ elif filter1 and filter2:
 
 #------------------ Stránka ----------------#
 
-#st.table(data)
 #folium map. funkce pro python
 st.write(px.bar(data, data["sldb_datum"], data["hodnota"]))
 
