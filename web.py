@@ -9,9 +9,15 @@ st.set_page_config("Stránka", layout="wide")
 
 #----------------- Data ---------------------#
 data = pd.read_csv('zdrojak_raw.csv')
-radky = ["idhod", "hodnota", "sldb_rok", "sldb_datum", "ukaz_txt", "misto_regpobytu_txt", "pohlavi_txt", "uzemi_txt", "uzemi_typ"]
+souradnice = pd.read_csv('souradnice.csv')
+# Přidání sloupců Latitude a Longitude na základě názvu obce
+data = data.merge(souradnice[['Obec', 'Okres', 'Kraj', 'Latitude', 'Longitude']], left_on='uzemi_txt', right_on='Obec', how='left')
+
+radky = ["idhod", "hodnota", "sldb_rok", "sldb_datum", "ukaz_txt", "misto_regpobytu_txt", "pohlavi_txt", "uzemi_txt", "uzemi_typ", 'Okres', 'Kraj', 'Latitude', 'Longitude']
 data = data[radky]
 data = data[data['uzemi_typ'] == 'obec']
+#Přidat souřadnice
+
 data.to_csv('zdrojak.csv', index=False)
 
 #px.bar(data, data["sldb_datum"], data["hodnota"])
@@ -29,7 +35,7 @@ if filter1:
 else:
     data_2 = data.copy()
 
-filter2 = sidebar.
+
 
 """if not filter1 and not filter2:
     filtered_data = data
