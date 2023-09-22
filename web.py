@@ -28,23 +28,36 @@ sidebar.title(":bar_chart: :blue[Filtry]")
 sidebar.caption("Vyberte potřebné filtry pro Vaši práci")
 
 
-filter1 = sidebar.multiselect("Obec", data["uzemi_txt"].unique())
+filter1 = sidebar.multiselect("Kraj", data["Kraj"].unique())
 
 if filter1:
-    data_2 = data[data["uzemi_typ"].isin(filter1)]
+    data_2 = data[data["Kraj"].isin(filter1)]
 else:
     data_2 = data.copy()
 
+filter2 = sidebar.multiselect("Okres", data_2["Okres"].unique())
+
+if filter2:
+    data_3 = data_2[data_2["Okres"].isin(filter2)]
+else:
+    data_3 = data_2.copy()
+
+filter3 = sidebar.multiselect("Obec", data_3["uzemi_txt"].unique())
+
+if filter3:
+    data_4 = data_3[data_3["uzemi_typ"].isin(filter3)]
+else:
+    data_4 = data_3.copy()
 
 
-"""if not filter1 and not filter2:
+if not filter1 and not filter2 and not filter3:
     filtered_data = data
 elif not filter2 and filter1:
     filtered_data = data_2
 elif not filter1 and filter2:
     filtered_data = data_3
 elif filter1 and filter2:
-    data = data_3
+    filtered_data = data_4
 #filter2 = sidebar.multiselect()"""
 
 #------------------ Stránka ----------------#
