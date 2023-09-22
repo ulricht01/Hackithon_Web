@@ -31,6 +31,14 @@ if filter2:
 else:
     data_3 = data_2.copy()
 
+if not filter1 and not filter2:
+    filtered_data = data
+elif not filter2 and filter1:
+    filtered_data = data_2
+elif not filter1 and filter2:
+    filtered_data = data_3
+elif filter1 and filter2:
+    data = data_3
 #filter2 = sidebar.multiselect()
 
 #------------------ Stránka ----------------#
