@@ -1,14 +1,12 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from flask import Flask
+
 
 st.set_page_config("Stránka")
 
-app = Flask(__name__)
-
 #----------------- Data ---------------------#
-data = pd.read_csv('zdrojak.csv', nrows=50)
+data = pd.read_csv('zdrojak.csv')
 radky = ["idhod", "hodnota", "sldb_rok", "sldb_datum", "ukaz_txt", "misto_regpobytu_txt", "pohlavi_txt", "uzemi_txt", "uzemi_typ"]
 data = data[radky]
 
@@ -19,12 +17,25 @@ sidebar = st.sidebar
 sidebar.title(":bar_chart: :blue[Filtry]")
 sidebar.caption("Vyberte potřebné filtry pro Vaši práci")
 
-filter1 = sidebar.multiselect("Kraje", data["uzemi_txt"].unique())
+filter1 = sidebar.multiselect("Obec", data["uzemi_typ"].unique())
+
+if filter1:
+    data_2 = data[data["uzemi_typ"].isin(filter1)]
+else:
+    data_2 = data.copy()
+
+filter2 = sidebar.multiselect("xxxx", data_2["uzemi_txt"].unique())
+
+if filter2:
+    data_3 = data_2[data_2["uzemi_typ"].isin(filter2)]
+else:
+    data_3 = data_2.copy()
+
 #filter2 = sidebar.multiselect()
 
 #------------------ Stránka ----------------#
 
-st.table(data)
+#st.table(data)
 #folium map. funkce pro python
 st.write(px.bar(data, data["sldb_datum"], data["hodnota"]))
 
