@@ -85,8 +85,11 @@ with expander_2:
     st.map(filtered_data.dropna(subset=['Latitude', 'Longitude']), latitude='Latitude', longitude='Longitude')
 
 expander_3 = st.expander("Oral :blush:")
-with expander_2:
-    st.bar_chart(oral, x='Kraj', y='pohlaví')
+
+pohlavi_kraje = oral.groupby(['Kraj', 'Pohlaví']).size().unstack(fill_value=0)
+expander_3 = st.expander("Oral :blush:")
+with expander_3:
+    st.bar_chart(pohlavi_kraje)
     
 
 
