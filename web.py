@@ -26,18 +26,21 @@ data.to_csv('zdrojak.csv', index=False)
 
 oral = pd.read_csv('oral.csv')
 pohlavi_kraje = oral.groupby(['Kraj', 'Pohlaví']).size().unstack(fill_value=0)
+pohledy = oral.groupby(['Pohlaví', "Praktikujete orální sex?"]).size().unstack(fill_value=0)
 
 #------------------ Cizinci ---------------------------#
 
 cizinci = pd.read_csv('cizinci.csv')
-cizinci_radky = ["hodnota","rok","kraj_txt","stobcan_txt"]
+cizinci_radky = ["hodnota","rok","kraj_txt","stobcan_txt", "vek_txt", "pohlavi_txt"]
 cizinci = cizinci[cizinci_radky]
-cizinci_kraje = cizinci.groupby(['kraj_txt', 'stobcan_txt']).size().unstack(fill_value=0)
-#px.bar(data, data["sldb_datum"], data["hodnota"])
+cizinci = cizinci.dropna(subset=['kraj_txt'])
+cizinci = cizinci.dropna(subset=['stobcan_txt'])
+cizinci = cizinci.dropna(subset=['vek_txt'])
+cizinci = cizinci.dropna(subset=['pohlavi_txt'])
 
 #----------------- Sidebar ------------------#
 sidebar = st.sidebar
-sidebar.title(":bar_chart: :blue[Filtry]")
+sidebar.title("📊 :blue[Filtry]")
 sidebar.caption("Vyberte potřebné filtry pro Vaši práci")
 
 
@@ -79,13 +82,13 @@ datum = filtered_data["sldb_datum"].max()
 st.subheader(f"Datum sčítání: {datum}")
 
 #------------------ Graf zobrazení početu obyvatel 
-expander_1 = st.expander("Počet lidí :bar_chart:")
+expander_1 = st.expander("Počet lidí 📊")
 with expander_1:
     st.bar_chart(filtered_data, x= "Kraj", y= "hodnota")
     st.bar_chart(filtered_data, x= "Okres", y= "hodnota")
     st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
 
-expander_2 = st.expander("Počet lidí :world_map:")
+expander_2 = st.expander("Počet lidí 🗺️")
 with expander_2:
     filtered_data['bod_velikost'] = filtered_data['hodnota'] / 10  # (math.log10(filtered_data['hodnota']) + 1) * 2
     st.map(filtered_data.dropna(subset=['bod_velikost', 'Latitude', 'Longitude']), 
@@ -94,14 +97,12 @@ with expander_2:
            size = 'bod_velikost',
            color = '#0044ff')
 
-expander_3 = st.expander("Oral :blush:")
+expander_3 = st.expander("Oral 😊")
 with expander_3:
     st.bar_chart(pohlavi_kraje)
+    st.bar_chart(pohledy)
 
 expander_4 = st.expander("Cizinci")
 with expander_4:
-    st.bar_chart(cizinci_kraje)
-    
-
-
-
+    st.bar_chart(cizinci, x='kraj_txt', y='hodnota')
+    st.bar_chart(cizinci, x='pohlavi_txt', y='hodnota')
