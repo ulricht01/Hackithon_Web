@@ -63,18 +63,20 @@ elif filter1 and filter2:
     filtered_data = data_4
 
 #------------------ Stránka ----------------#
+datum = filtered_data["sldb_datum"].max()
+st.subheader(f"Datum sčítání: {datum}")
 
 #------------------ Graf zobrazení početu obyvatel 
-container = st.container()
-with container:
-    st.subheader(filtered_data["sldb_datum"].max())
-    st.write(px.bar(filtered_data, data["Kraj"], data["hodnota"]))
+expander_1 = st.expander("Počet lidí")
+with expander_1:
+    st.bar_chart(filtered_data, x= "Kraj", y= "hodnota")
+    st.bar_chart(filtered_data, x= "Okres", y= "hodnota")
+    st.bar_chart(filtered_data, x= "uzemi_txt", y= "hodnota")
+
+expander_2 = st.expander("Počet lidí dle okresů")
+with expander_2:
+    pass
     
-
-
-
-
-
 
 
 
