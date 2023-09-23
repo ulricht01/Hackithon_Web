@@ -82,23 +82,34 @@ datum = filtered_data["sldb_datum"].max()
 st.subheader(f"Datum sčítání: {datum}")
 
 #------------------ Graf zobrazení početu obyvatel 
+
+
 expander_1 = st.expander("Počet lidí 📊")
 with expander_1:
-    st.bar_chart(filtered_data, x= "Kraj", y= "hodnota")
-    st.bar_chart(filtered_data, x= "Okres", y= "hodnota")
-    st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
+        st.bar_chart(filtered_data, x= "Kraj", y= "hodnota")
+        st.bar_chart(filtered_data, x= "Okres", y= "hodnota")
+        st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
+    
 
 expander_2 = st.expander("Počet lidí 🗺️")
 with expander_2:
-    filtered_data['bod_velikost'] = filtered_data['hodnota'] / 10  # (math.log10(filtered_data['hodnota']) + 1) * 2
+    filtered_data['bod_velikost'] = filtered_data['hodnota'] / 10  #[list(map(int, row)) for row in arr]
     st.map(filtered_data.dropna(subset=['bod_velikost', 'Latitude', 'Longitude']), 
            latitude='Latitude', 
            longitude='Longitude', 
-           size = 'bod_velikost',
-           color = '#0044ff')
+           size = 'bod_velikost')
+
+
+filtered_data1 = filtered_data.copy()
+oral1 = oral.copy()
 
 expander_3 = st.expander("Oral 😊")
+
 with expander_3:
+    filter_special1 = st.multiselect("Kraje-Oral", oral1["Kraj"].unique())
+    if filter_special1:
+        oral1 = oral1[oral1["Kraj"].isin(filter_special1)]
+        pohlavi_kraje = oral1.groupby(['Kraj', 'Pohlaví']).size().unstack(fill_value=0)
     st.bar_chart(pohlavi_kraje)
     st.bar_chart(pohledy)
 
