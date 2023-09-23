@@ -145,7 +145,27 @@ with expander_4:
     st.bar_chart(cizinci, x='kraj_txt', y='hodnota')
     st.bar_chart(cizinci, x='pohlavi_txt', y='hodnota')
 
+vira = pd.read_csv('vira.csv')
+vira = vira.merge(souradnice[['Obec', 'Okres', 'Kraj']], left_on='uzemi_txt', right_on='Obec', how='left')
+vira = vira.dropna(subset=['vira_txt'])
+filtered_vira_1 = vira.copy()
 expender_5 = st.expander("Víra")
 with expender_5:
-    pass#st.
-#a
+    filter_special2 = st.multiselect("Kraj", filtered_vira_1 ["Kraj"].unique())
+    if filter_special2:
+        filtered_vira_1  = filtered_vira_1 [filtered_vira_1 ["Kraj"].isin(filter_special2)]
+    
+    filter_special3 = st.multiselect("Okres", filtered_vira_1 ["Okres"].unique())
+    if filter_special3:
+        filtered_vira_1  = filtered_vira_1 [filtered_vira_1 ["Okres"].isin(filter_special3)]
+    
+    filter_special4 = st.multiselect("Obec", filtered_vira_1 ["Obec"].unique())
+    if filter_special4:
+        filtered_vira_1  = filtered_vira_1 [filtered_vira_1 ["Obec"].isin(filter_special4)]
+
+
+    uzemi_viry = filtered_vira_1.groupby(['uzemi_txt', 'hodnota']).size().unstack(fill_value=0)
+    top_10_vira_data = filtered_vira_1.sort_values(by='hodnota', ascending=False).head(10)
+    st.bar_chart(top_10_vira_data, x='vira_txt', y='hodnota')
+    top_10_vira_uzemi = filtered_vira_1.sort_values(by='hodnota', ascending=False).head(10)
+    st.bar_chart(top_10_vira_uzemi, x='uzemi_txt', y='hodnota')
