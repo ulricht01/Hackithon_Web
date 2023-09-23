@@ -108,7 +108,6 @@ with expander_2:
            size = 'bod_velikost')
 
 
-filtered_data1 = filtered_data.copy()
 oral1 = oral.copy()
 
 expander_3 = st.expander("Oral 😊")
@@ -121,8 +120,28 @@ with expander_3:
     st.bar_chart(pohlavi_kraje)
     st.bar_chart(pohledy)
 
+#Segregace menšin
+
+filtered_data1 = cizinci.copy()
 expander_4 = st.expander("Cizinci")
+
 with expander_4:
+    filter_special2 = st.multiselect("Věk_cizinec", filtered_data1["vek_txt"].unique())
+    if filter_special2:
+        filtered_data1 = filtered_data1[filtered_data1["vek_txt"].isin(filter_special2)]
+    
+    filter_special3 = st.multiselect("Pohlaví_cizinec", filtered_data1["pohlavi_txt"].unique())
+    if filter_special3:
+        filtered_data1 = filtered_data1[filtered_data1["pohlavi_txt"].isin(filter_special3)]
+    
+    filter_special4 = st.multiselect("Původ_cizinec", filtered_data1["stobcan_txt"].unique())
+    if filter_special4:
+        filtered_data1 = filtered_data1[filtered_data1["stobcan_txt"].isin(filter_special4)]
+    
+    filter_special5 = st.multiselect("Kraj_cizinec", filtered_data1["kraj_txt"].unique())
+    if filter_special5:
+        filtered_data1 = filtered_data1[filtered_data1["kraj_txt"].isin(filter_special5)]
+        
     st.bar_chart(cizinci, x='kraj_txt', y='hodnota')
     st.bar_chart(cizinci, x='pohlavi_txt', y='hodnota')
 
