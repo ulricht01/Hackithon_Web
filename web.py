@@ -91,12 +91,14 @@ st.subheader(f"Datum sčítání: {datum}")
 
 #------------------ Graf zobrazení početu obyvatel 
 
-
-expander_1 = st.expander("Počet lidí 📊")
-with expander_1:
-        st.bar_chart(filtered_data, x= "Kraj", y= "hodnota", color="Kraj" if not filter1 else None)
-        st.bar_chart(filtered_data, x= "Okres", y= "hodnota", color="Okres" if not filter1 and not filter2 else None)
-        st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
+try:
+    expander_1 = st.expander("Počet lidí 📊")
+    with expander_1:
+            st.bar_chart(filtered_data, x= "Kraj", y= "hodnota", color="Kraj" if not filter1 else None)
+            st.bar_chart(filtered_data, x= "Okres", y= "hodnota", color="Okres" if not filter1 and not filter2 else None)
+            st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
+except KeyError:
+    st.write("Pro tyto filtry neexistují žádná data.")
     
 
 expander_2 = st.expander("Počet lidí 🗺️")
