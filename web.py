@@ -19,6 +19,8 @@ data = data[data['uzemi_typ'] == 'obec']
 data["sldb_datum"] = pd.to_datetime(data["sldb_datum"]) 
 data["sldb_datum"] = data["sldb_datum"].dt.strftime('%d.%m.%Y')
 data.rename(columns={"uzemi_txt": "mesto"}, inplace=True)
+data = data.dropna(subset=['Kraj'])
+data = data.dropna(subset=['Okres'])
 
 data.to_csv('zdrojak.csv', index=False)
 
@@ -77,6 +79,12 @@ elif filter1 and filter2:
     filtered_data = data_4
     
 
+datasets = {
+    "Dataset 1": cizinci,
+    "Dataset 2": oral,
+    "Dataset 3": data
+}
+
 #------------------ Stránka ----------------#
 datum = filtered_data["sldb_datum"].max()
 st.subheader(f"Datum sčítání: {datum}")
@@ -117,3 +125,7 @@ expander_4 = st.expander("Cizinci")
 with expander_4:
     st.bar_chart(cizinci, x='kraj_txt', y='hodnota')
     st.bar_chart(cizinci, x='pohlavi_txt', y='hodnota')
+
+expender_5 = st.expander("Víra")
+with expender_5:
+    pass#st.
