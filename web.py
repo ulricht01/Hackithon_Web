@@ -41,8 +41,8 @@ sidebar.title(":bar_chart: :blue[Filtry]")
 sidebar.caption("Vyberte potřebné filtry pro Vaši práci")
 
 
-#filter1 = sidebar.multiselect("Kraj", data["Kraj"].unique())
-filter1 = sidebar.multiselect("Sloupec pro filtrování", data.columns)
+filter1 = sidebar.multiselect("Kraj", data["Kraj"].unique())
+#filter1 = sidebar.multiselect("Sloupec pro filtrování", data.columns)
 
 if filter1:
     data_2 = data[data["Kraj"].isin(filter1)]
@@ -87,7 +87,7 @@ with expander_1:
 
 expander_2 = st.expander("Počet lidí :world_map:")
 with expander_2:
-    filtered_data['bod_velikost'] = filtered_data['hodnota']# / (math.log10(filtered_data['hodnota']) + 1) * 2
+    filtered_data['bod_velikost'] = filtered_data['hodnota'] / 10  # (math.log10(filtered_data['hodnota']) + 1) * 2
     st.map(filtered_data.dropna(subset=['bod_velikost', 'Latitude', 'Longitude']), 
            latitude='Latitude', 
            longitude='Longitude', 
