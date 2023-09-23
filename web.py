@@ -13,7 +13,6 @@ st.set_page_config("Sčítání lidu", layout="wide")
 
 
 
-st.balloons()
 #----------------- Sčítání lidu ---------------------#
 data = pd.read_csv('zdrojak_raw.csv')
 souradnice = pd.read_csv('souradnice.csv')
@@ -90,14 +89,16 @@ st.subheader(f"Datum sčítání: {datum}")
 
 #------------------ Graf zobrazení početu obyvatel 
 
-
-expander_1 = st.expander("Počet lidí 📊")
-with expander_1:
-        st.bar_chart(filtered_data, x= "Kraj", y= "hodnota")
-        st.bar_chart(filtered_data, x= "Okres", y= "hodnota")
-        st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
-        st.success("Graf se úspěšně vykreslil!")
-    
+try:
+    expander_1 = st.expander("Počet lidí 📊")
+    with expander_1:
+            st.bar_chart(filtered_data, x= "Kraj", y= "hodnota", color="Kraj" if not filter1 else None)
+            st.bar_chart(filtered_data, x= "Okres", y= "hodnota", color="Okres" if not filter1 and not filter2 else None)
+            st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
+            st.success("Graf se úspěšně vykreslil!")
+            st.balloons()
+except KeyError:
+    st.warning("Pro tyto filtry neexistují žádná data.")    
 
 expander_2 = st.expander("Počet lidí 🗺️")
 with expander_2:
