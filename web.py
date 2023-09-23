@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os 
+import math
 import time
 
 
@@ -86,7 +87,12 @@ with expander_1:
 
 expander_2 = st.expander("Počet lidí :world_map:")
 with expander_2:
-    st.map(filtered_data.dropna(subset=['Latitude', 'Longitude']), latitude='Latitude', longitude='Longitude')
+    filtered_data['bod_velikost'] = filtered_data['hodnota']# / (math.log10(filtered_data['hodnota']) + 1) * 2
+    st.map(filtered_data.dropna(subset=['bod_velikost', 'Latitude', 'Longitude']), 
+           latitude='Latitude', 
+           longitude='Longitude', 
+           size = 'bod_velikost',
+           color = '#0044ff')
 
 expander_3 = st.expander("Oral :blush:")
 with expander_3:
