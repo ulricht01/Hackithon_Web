@@ -8,20 +8,22 @@ import time
 
 st.set_page_config("Stránka", layout="wide")
 
-#----------------- Data ---------------------#
+#----------------- Sčítání lidu ---------------------#
 data = pd.read_csv('zdrojak_raw.csv')
 souradnice = pd.read_csv('souradnice.csv')
-# Přidání sloupců Latitude a Longitude na základě názvu obce
 data = data.merge(souradnice[['Obec', 'Okres', 'Kraj', 'Latitude', 'Longitude']], left_on='uzemi_txt', right_on='Obec', how='left')
-
 radky = ["idhod", "hodnota", "sldb_rok", "sldb_datum", "ukaz_txt", "misto_regpobytu_txt", "pohlavi_txt", "uzemi_txt", "uzemi_typ", 'Okres', 'Kraj', 'Latitude', 'Longitude']
 data = data[radky]
 data = data[data['uzemi_typ'] == 'obec']
 data["sldb_datum"] = pd.to_datetime(data["sldb_datum"]) 
 data["sldb_datum"] = data["sldb_datum"].dt.strftime('%d.%m.%Y')
-#Přidat souřadnice
+data.rename(columns={"uzemi_txt": "mesto"}, inplace=True)
 
 data.to_csv('zdrojak.csv', index=False)
+
+#------------------ Oral ---------------------------#
+
+oral = pd.read_csv('oral.csv')
 
 #px.bar(data, data["sldb_datum"], data["hodnota"])
 
@@ -45,10 +47,10 @@ if filter2:
 else:
     data_3 = data_2.copy()
 
-filter3 = sidebar.multiselect("Obec", data_3["uzemi_txt"].unique())
+filter3 = sidebar.multiselect("Obec", data_3["mesto"].unique())
 
 if filter3:
-    data_4 = data_3[data_3["uzemi_typ"].isin(filter3)]
+    data_4 = data_3[data_3["mesto"].isin(filter3)]
 else:
     data_4 = data_3.copy()
 
@@ -67,15 +69,19 @@ datum = filtered_data["sldb_datum"].max()
 st.subheader(f"Datum sčítání: {datum}")
 
 #------------------ Graf zobrazení početu obyvatel 
-expander_1 = st.expander("Počet lidí")
+expander_1 = st.expander("Počet lidí :bar_chart:")
 with expander_1:
     st.bar_chart(filtered_data, x= "Kraj", y= "hodnota")
     st.bar_chart(filtered_data, x= "Okres", y= "hodnota")
-    st.bar_chart(filtered_data, x= "uzemi_txt", y= "hodnota")
+    st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
 
-expander_2 = st.expander("Počet lidí dle okresů")
+expander_2 = st.expander("Počet lidí :world_map:")
 with expander_2:
-    pass
+    st.map(filtered_data.dropna(subset=['Latitude', 'Longitude']), latitude='Latitude', longitude='Longitude')
+
+expander_3 = st.expander("Oral :blush:")
+with expander_2:
+    st.bar_chart(oral, x='Kraj', y='pohlaví')
     
 
 
