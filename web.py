@@ -7,8 +7,13 @@ import time
 
 
 
-st.set_page_config("Stránka", layout="wide")
 
+
+st.set_page_config("Sčítání lidu", layout="wide")
+
+
+
+st.balloons()
 #----------------- Sčítání lidu ---------------------#
 data = pd.read_csv('zdrojak_raw.csv')
 souradnice = pd.read_csv('souradnice.csv')
@@ -79,12 +84,6 @@ elif filter1 and filter2:
     filtered_data = data_4
     
 
-datasets = {
-    "Dataset 1": cizinci,
-    "Dataset 2": oral,
-    "Dataset 3": data
-}
-
 #------------------ Stránka ----------------#
 datum = filtered_data["sldb_datum"].max()
 st.subheader(f"Datum sčítání: {datum}")
@@ -97,6 +96,7 @@ with expander_1:
         st.bar_chart(filtered_data, x= "Kraj", y= "hodnota")
         st.bar_chart(filtered_data, x= "Okres", y= "hodnota")
         st.bar_chart(filtered_data, x= "mesto", y= "hodnota")
+        st.success("Graf se úspěšně vykreslil!")
     
 
 expander_2 = st.expander("Počet lidí 🗺️")
@@ -106,6 +106,8 @@ with expander_2:
            latitude='Latitude', 
            longitude='Longitude', 
            size = 'bod_velikost')
+    st.success("Graf se úspěšně vykreslil!")
+    
 
 
 oral1 = oral.copy()
@@ -119,11 +121,13 @@ with expander_3:
         pohlavi_kraje = oral1.groupby(['Kraj', 'Pohlaví']).size().unstack(fill_value=0)
     st.bar_chart(pohlavi_kraje)
     st.bar_chart(pohledy)
+    st.success("Graf se úspěšně vykreslil!")
+    st.snow()
 
 #Segregace menšin
 
 filtered_data1 = cizinci.copy()
-expander_4 = st.expander("Cizinci")
+expander_4 = st.expander("Cizinci :alien:")
 
 with expander_4:
     filter_special2 = st.multiselect("Věk_cizinec", filtered_data1["vek_txt"].unique())
@@ -144,12 +148,13 @@ with expander_4:
         
     st.bar_chart(cizinci, x='kraj_txt', y='hodnota')
     st.bar_chart(cizinci, x='pohlavi_txt', y='hodnota')
+    st.success("Graf se úspěšně vykreslil!")
 
 vira = pd.read_csv('vira.csv')
 vira = vira.merge(souradnice[['Obec', 'Okres', 'Kraj']], left_on='uzemi_txt', right_on='Obec', how='left')
 vira = vira.dropna(subset=['vira_txt'])
 filtered_vira_1 = vira.copy()
-expender_5 = st.expander("Víra")
+expender_5 = st.expander("Víra :pray:")
 with expender_5:
     filter_special2 = st.multiselect("Kraj", filtered_vira_1 ["Kraj"].unique())
     if filter_special2:
@@ -169,3 +174,4 @@ with expender_5:
     st.bar_chart(top_10_vira_data, x='vira_txt', y='hodnota')
     top_10_vira_uzemi = filtered_vira_1.sort_values(by='hodnota', ascending=False).head(10)
     st.bar_chart(top_10_vira_uzemi, x='uzemi_txt', y='hodnota')
+    st.success("Graf se úspěšně vykreslil!")
