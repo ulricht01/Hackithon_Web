@@ -24,12 +24,14 @@ data.to_csv('zdrojak.csv', index=False)
 #------------------ Oral ---------------------------#
 
 oral = pd.read_csv('oral.csv')
+pohlavi_kraje = oral.groupby(['Kraj', 'Pohlaví']).size().unstack(fill_value=0)
 
 #------------------ Cizinci ---------------------------#
 
 cizinci = pd.read_csv('cizinci.csv')
 cizinci_radky = ["hodnota","rok","kraj_txt","stobcan_txt"]
 cizinci = cizinci[cizinci_radky]
+cizinci_kraje = cizinci.groupby(['kraj_txt', 'stobcan_txt']).size().unstack(fill_value=0)
 #px.bar(data, data["sldb_datum"], data["hodnota"])
 
 #----------------- Sidebar ------------------#
@@ -38,7 +40,8 @@ sidebar.title(":bar_chart: :blue[Filtry]")
 sidebar.caption("Vyberte potřebné filtry pro Vaši práci")
 
 
-filter1 = sidebar.multiselect("Kraj", data["Kraj"].unique())
+#filter1 = sidebar.multiselect("Kraj", data["Kraj"].unique())
+filter1 = sidebar.multiselect("Sloupec pro filtrování", data.columns)
 
 if filter1:
     data_2 = data[data["Kraj"].isin(filter1)]
@@ -68,6 +71,7 @@ elif not filter1 and filter2:
     filtered_data = data_3
 elif filter1 and filter2:
     filtered_data = data_4
+    
 
 #------------------ Stránka ----------------#
 datum = filtered_data["sldb_datum"].max()
@@ -85,11 +89,12 @@ with expander_2:
     st.map(filtered_data.dropna(subset=['Latitude', 'Longitude']), latitude='Latitude', longitude='Longitude')
 
 expander_3 = st.expander("Oral :blush:")
-
-pohlavi_kraje = oral.groupby(['Kraj', 'Pohlaví']).size().unstack(fill_value=0)
-expander_3 = st.expander("Oral :blush:")
 with expander_3:
     st.bar_chart(pohlavi_kraje)
+
+expander_4 = st.expander("Cizinci")
+with expander_4:
+    st.bar_chart(cizinci_kraje)
     
 
 
