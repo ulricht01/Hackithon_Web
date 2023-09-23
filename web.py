@@ -25,6 +25,11 @@ data.to_csv('zdrojak.csv', index=False)
 
 oral = pd.read_csv('oral.csv')
 
+#------------------ Cizinci ---------------------------#
+
+cizinci = pd.read_csv('cizinci.csv')
+cizinci_radky = ["hodnota","rok","kraj_txt","stobcan_txt"]
+cizinci = cizinci[cizinci_radky]
 #px.bar(data, data["sldb_datum"], data["hodnota"])
 
 #----------------- Sidebar ------------------#
