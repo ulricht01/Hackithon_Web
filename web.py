@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os 
+import time
 
 
 
@@ -16,6 +17,8 @@ data = data.merge(souradnice[['Obec', 'Okres', 'Kraj', 'Latitude', 'Longitude']]
 radky = ["idhod", "hodnota", "sldb_rok", "sldb_datum", "ukaz_txt", "misto_regpobytu_txt", "pohlavi_txt", "uzemi_txt", "uzemi_typ", 'Okres', 'Kraj', 'Latitude', 'Longitude']
 data = data[radky]
 data = data[data['uzemi_typ'] == 'obec']
+data["sldb_datum"] = pd.to_datetime(data["sldb_datum"]) 
+data["sldb_datum"] = data["sldb_datum"].dt.strftime('%d.%m.%Y')
 #Přidat souřadnice
 
 data.to_csv('zdrojak.csv', index=False)
@@ -58,12 +61,16 @@ elif not filter1 and filter2:
     filtered_data = data_3
 elif filter1 and filter2:
     filtered_data = data_4
-#filter2 = sidebar.multiselect()"""
 
 #------------------ Stránka ----------------#
 
-#folium map. funkce pro python
-st.write(px.bar(data, data["sldb_datum"], data["hodnota"]))
+#------------------ Graf zobrazení početu obyvatel 
+container = st.container()
+with container:
+    st.subheader(filtered_data["sldb_datum"].max())
+    st.write(px.bar(filtered_data, data["Kraj"], data["hodnota"]))
+    
+
 
 
 
